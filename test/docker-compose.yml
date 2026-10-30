@@ -8,3 +8,11 @@ services:
       context: ../
     ports:
       - 5432:5432
+    volumes:
+      - ./server.crt:/var/lib/postgresql/server.crt
+      - ./server.key:/var/lib/postgresql/server.key
+      - pg-cache:/cache
+
+volumes:
+  pg-cache:
+    external: false

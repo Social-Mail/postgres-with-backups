@@ -9,6 +9,8 @@ set -e
 #   chown postgres:postgres /var/lib/postgresql/server.*
 # fi
 
+chmod 600 /var/lib/postgresql/server.*
+chown postgres:postgres /var/lib/postgresql/server.*
 
 # Ensure proper ownership
 
