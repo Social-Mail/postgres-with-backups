@@ -62,12 +62,15 @@ else
 
         node /app/index.js --restore
 
-        echo "Starting Recovery"
+        if [ -f "$PG_RESTORE/restore.sh" ]; then
 
-        "$PG_RESTORE/restore.sh"
+            echo "Starting Recovery"
 
-        touch "$PGDATA/recovery.signal"
-        touch "$PG_RESTORE/restored.done"
+            "$PG_RESTORE/restore.sh"
+
+            touch "$PGDATA/recovery.signal"
+            touch "$PG_RESTORE/restored.done"
+        fi
 
     fi
 
