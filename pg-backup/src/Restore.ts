@@ -15,14 +15,11 @@ export default class Restore {
 
     }
 
-    async latest() {
-        await spawnPromise("aws", ["s3", "cp", `s3://${}config.json`])
-    }
-
     async restore() {
         const folder = process.env.PG_RESTORE_DAY || (await this.storage.getConfig()).latest;
         if(!folder) {
-            throw new Error("No latest backup exist");
+            console.log(`No backups exist to restore... `)
+            return;
         }
 
         const pgRestore = globalEnv.folders.restore;
