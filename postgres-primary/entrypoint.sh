@@ -76,9 +76,17 @@ else
 
 fi
 
-echo "0 0 * * * node /app/index.js > /proc/1/fd/1 2>&1" > /etc/crontabs/root
+(
+    while true; do
+        echo "[Supervisor] Starting long-running BackupTool service..."
+        
+        # Run your infinite script (replace 'start' with whatever argument your daemon takes)
+        node /app/index.js
+        
+        echo "[Supervisor] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
+        sleep 2
+    done
+) &
 
-echo "[Boot] Launching background cron scheduler..."
-crond -b -l 2
 
 docker-entrypoint.sh "$@"
