@@ -6,6 +6,7 @@
         "rootDir": "./src",
         "strict": false,
         "moduleResolution": "nodenext",
+        "tsBuildInfoFile": "dist/.tsbuildinfo",
         "incremental": true,
         "sourceMap": true,
         "declaration": true,
