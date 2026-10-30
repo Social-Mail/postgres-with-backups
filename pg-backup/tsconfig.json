@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "target": "es2022",
+        "module":"nodenext",
+        "rootDir": "./src",
+        "strict": false,
+        "moduleResolution": "nodenext",
+        "incremental": true,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "dist",
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noUnusedLocals": true,
+        "jsxFactory": "XNode.create",
+        "lib": [
+            "ES2018",
+            "ES2021.WeakRef",
+            "esnext.disposable",
+            "ES2021.String",
+            "ES2022.Object"
+        ],
+        "types": [
+            "node"
+        ]
+    },
+    "include": [
+        "src/**/*"
+   ],
+    "exclude": [
+		"node_modules",
+		"tests"
+    ]
+}

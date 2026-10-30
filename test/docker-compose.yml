@@ -1,0 +1,6 @@
+services:
+  postgres:
+    pull_policy: build
+    container_name: pg-with-s3-backups
+    env_file:
+      - .env
