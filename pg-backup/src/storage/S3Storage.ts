@@ -19,7 +19,7 @@ export default class S3Storage extends BaseStorage {
 
     constructor() {
         super();
-        const { endpoint, accessKeyId, secretAccessKey, region, bucket, folder } = globalEnv.storage.s3;
+        const { endpoint, accessKeyId, secretAccessKey, region, bucket, folder } = globalEnv.s3;
 
         spawnSync("/app/hash-pwd.sh");
 
