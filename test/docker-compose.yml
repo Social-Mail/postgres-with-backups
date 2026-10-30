@@ -6,3 +6,5 @@ services:
       - .env
     build: 
       context: ../
+    ports:
+      - 5432:5432
