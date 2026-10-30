@@ -10,8 +10,10 @@ set -e
 # fi
 
 
-
 # Ensure proper ownership
+
+echo "Changing Ownership of $PGDATA"
+
 chown -R postgres:postgres "$PGDATA"
 chmod 700 "$PGDATA"
 
@@ -58,7 +60,7 @@ else
 
         echo "Downloading latest backup"
 
-        nodejs /app/index.js --restore
+        node /app/index.js --restore
 
         echo "Starting Recovery"
 
