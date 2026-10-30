@@ -5,16 +5,16 @@ RUN apk add --no-cache aws-cli openssl
 
 VOLUME [ "/db/wal" ]
 
-COPY ./postgresql.conf /etc/postgresql/postgresql.conf
-COPY ./pg_hba.conf /etc/postgresql/pg_hba.conf
+COPY ./postgres-primary/postgresql.conf /etc/postgresql/postgresql.conf
+COPY ./postgres-primary/pg_hba.conf /etc/postgresql/pg_hba.conf
 
-COPY ./create-user.sh /docker-entrypoint-initdb.d/
+COPY ./postgres-primary/create-user.sh /docker-entrypoint-initdb.d/
 
 WORKDIR /app
-COPY ./entrypoint.sh ./
-COPY ./wal-clean.sh ./
-COPY ./wal-fetch.sh ./
-COPY ./wal-send.sh ./
+COPY ./postgres-primary/entrypoint.sh ./
+COPY ./postgres-primary/wal-clean.sh ./
+COPY ./postgres-primary/wal-fetch.sh ./
+COPY ./postgres-primary/wal-send.sh ./
 RUN chmod +x ./entrypoint.sh
 RUN chmod +x ./wal-send.sh
 RUN chmod +x ./wal-fetch.sh
