@@ -7,9 +7,13 @@ import Mask from "./mask.js";
 export const spawnPromise = (path, args?: (string | Mask)[], options?: SpawnOptionsWithoutStdio & { streamLog?: boolean | ((...a: any) => void), logCommand?: boolean, logData?: boolean, logError?: boolean, throwOnFail?: boolean }) => new Promise<{
     get all(): string;
     pid: number;
+    out: Buffer[],
+    err: Buffer[],
     status: number;
 }>((resolve, reject) => {
     const all = [];
+    const out = [] as Buffer[];
+    const err = [] as Buffer[];
     const { logCommand = true, throwOnFail = true, logData = true, logError = true } = options ??= {};
     let { streamLog } = options;
     if (typeof streamLog === "boolean") {
@@ -43,12 +47,14 @@ export const spawnPromise = (path, args?: (string | Mask)[], options?: SpawnOpti
 
     cd.stdout.on("data", (data) => {
         timer.refresh();
+        out.push(data);
         data = data.toString("utf-8");
         streamLog?.(data);
         all.push(data);
     });
     cd.stderr.on("data", (data) => {
         timer.refresh();
+        err.push(data);
         data = data.toString("utf-8");
         streamLog?.(data);
         all.push(color.red(data));
@@ -85,6 +91,8 @@ export const spawnPromise = (path, args?: (string | Mask)[], options?: SpawnOpti
             get all() {
                 return all.join("\n");
             },
+            out,
+            err,
             pid,
             status });
     });

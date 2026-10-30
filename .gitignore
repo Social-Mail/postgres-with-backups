@@ -1,2 +1,4 @@
 .env
 test/.env
+pg-backup/node_modules
+pg-backup/dist

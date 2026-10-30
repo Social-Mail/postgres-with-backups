@@ -57,20 +57,4 @@ jobs:
         with:
           context: ./postgres-primary
           push: true
-          tags: ghcr.io/social-mail/postgres-ha:latest, ghcr.io/social-mail/postgres-ha:${{ github.sha }}
-
-      - name: Build and push Docker image
-        id: pg-backup
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: ./pg-backup
-          push: true
-          tags: ghcr.io/social-mail/pg-backup:latest, ghcr.io/social-mail/pg-backup:${{ github.sha }}
-
-      - name: Build and push Docker image
-        id: pg-ssl
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-        with:
-          context: ./pg-ssl
-          push: true
-          tags: ghcr.io/social-mail/pg-ssl:latest, ghcr.io/social-mail/pg-ssl:${{ github.sha }}
+          tags: ghcr.io/social-mail/postgres-with-backups:latest, ghcr.io/social-mail/postgres-with-backups:${{ github.sha }}

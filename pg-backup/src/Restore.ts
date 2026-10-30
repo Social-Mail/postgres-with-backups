@@ -15,6 +15,10 @@ export default class Restore {
 
     }
 
+    async latest() {
+        await spawnPromise("aws", ["s3", "cp", `s3://${}config.json`])
+    }
+
     async restore() {
         const folder = process.env.PG_RESTORE_DAY || (await this.storage.getConfig()).latest;
         if(!folder) {

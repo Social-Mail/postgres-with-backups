@@ -8,16 +8,13 @@ const forceEnv = (name) => {
 
 export const globalEnv = {
 
-    storage: {
-        s3: {
-            accessKeyId: process.env.PG_BACKUP_STORAGE_S3_ACCESS_KEY_ID,
-            secretAccessKey: process.env.PG_BACKUP_STORAGE_S3_SECRET,
-            region: process.env.PG_BACKUP_STORAGE_S3_REGION || "us-east-1",
-            bucket: process.env.PG_BACKUP_STORAGE_S3_BUCKET,
-            endpoint: process.env.PG_BACKUP_STORAGE_S3_ENDPOINT,
-            folder: process.env.PG_BACKUP_STORAGE_S3_BACKUP_FOLDER || "pg-backups",
-            encryptionPassword: process.env.PG_BACKUP_STORAGE_S3_ENC_PASSWORD
-        },
+    s3: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        region: process.env.AWS_DEFAULT_REGION || "us-east-1",
+        bucket: process.env.AWS_S3_BUCKET,
+        endpoint: process.env.AWS_ENDPOINT_URL_S3,
+        folder: process.env.PG_S3_BACKUP_FOLDER || "pg-backups",
     },
     source: {
         host: process.env.PG_BACKUP_HOST,
@@ -28,7 +25,6 @@ export const globalEnv = {
     },
     folders: {
         backup: process.env.PG_BACKUP_FOLDER || "/cache",
-        pgBackup: process.env.PG_BACKUP_PG_FOLDER || "/pg-backup-root",
         restore: process.env.PG_RESTORE || "/cache/restore",
         get data() {
             return forceEnv("PGDATA");

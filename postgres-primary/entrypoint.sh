@@ -2,8 +2,11 @@
 
 set -e
 
-cp -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" /var/lib/postgresql/server.crt
-cp -f "/etc/letsencrypt/live/$HOST_NAME/privkey.pem" /var/lib/postgresql/server.key
+if [ ! -s "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" ]; then
+    cp -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" /var/lib/postgresql/server.crt
+    cp -f "/etc/letsencrypt/live/$HOST_NAME/privkey.pem" /var/lib/postgresql/server.key
+fi
+
 
 chmod 600 /var/lib/postgresql/server.*
 chown postgres:postgres /var/lib/postgresql/server.*
@@ -41,7 +44,7 @@ if [ "$PG_MODE" == "replica" ]; then
         chmod 700 "$PGDATA"
     fi
 
-else 
+else
 
     if [ -f "$PG_RESTORE/restored.done" ]; then
 
@@ -49,21 +52,28 @@ else
         echo "DB Restored"
         rm "$PGDATA/recovery.signal"
 
-    else
-
-        if [ -d "$PG_RESTORE" ]; then
-
-            echo "Combining backups"
-
-            "$PG_RESTORE/restore.sh"
-
-            echo "Starting Recovery"
-
-            touch "$PGDATA/recovery.signal"
-            touch "$PG_RESTORE/restored.done"
-
-        fi
     fi
+
+    if [ ! -s "$PGDATA/PG_VERSION" ]; then
+
+        echo "Downloading latest backup"
+
+        nodejs /app/index.js --restore
+
+        echo "Starting Recovery"
+
+        "$PG_RESTORE/restore.sh"
+
+        touch "$PGDATA/recovery.signal"
+        touch "$PG_RESTORE/restored.done"
+
+    fi
+
 fi
+
+echo "0 0 * * * node /app/index.js > /proc/1/fd/1 2>&1" > /etc/crontabs/root
+
+echo "[Boot] Launching background cron scheduler..."
+crond -b -l 2
 
 docker-entrypoint.sh "$@"
