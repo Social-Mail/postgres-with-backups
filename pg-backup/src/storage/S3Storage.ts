@@ -7,7 +7,6 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import CRC from "./CRC.js";
 import S3Upload from "./S3Upload.js";
-import { spawnSync } from "node:child_process";
 import Encryption from "../Encryption.js";
 
 export default class S3Storage extends BaseStorage {
@@ -20,8 +19,6 @@ export default class S3Storage extends BaseStorage {
     constructor() {
         super();
         const { endpoint, accessKeyId, secretAccessKey, region, bucket, folder } = globalEnv.s3;
-
-        spawnSync("/app/hash-pwd.sh");
 
         this.bucket = bucket;
         this.folder = folder;

@@ -1,7 +1,7 @@
 FROM postgis/postgis:18-3.6-alpine
 
 RUN apk add --no-cache gosu
-RUN apk add --no-cache aws-cli openssl
+RUN apk add --no-cache aws-cli openssl nodejs
 
 VOLUME [ "/db/wal" ]
 
@@ -15,6 +15,13 @@ COPY ./postgres-primary/entrypoint.sh ./
 COPY ./postgres-primary/wal-clean.sh ./
 COPY ./postgres-primary/wal-fetch.sh ./
 COPY ./postgres-primary/wal-send.sh ./
+
+COPY ./pg-backup/package.json ./
+COPY ./pg-backup/dist ./dist
+COPY ./pg-backup/node_modules ./node_modules
+COPY ./pg-backup/src ./src
+COPY ./pg-backup/index.js ./
+
 RUN chmod +x ./entrypoint.sh
 RUN chmod +x ./wal-send.sh
 RUN chmod +x ./wal-fetch.sh
