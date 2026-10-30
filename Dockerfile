@@ -3,9 +3,9 @@ FROM postgis/postgis:18-3.6-alpine
 ENV PGDATA=/var/lib/postgresql/18/docker
 
 RUN apk add --no-cache gosu
-RUN apk add --no-cache aws-cli openssl nodejs postgresql18-client@edge
+RUN apk add --no-cache aws-cli openssl nodejs postgresql18-client
 
-VOLUME [ "/db/wal", "/var/lib/postgresql/18/docker" ]
+VOLUME [ "/db/wal", "/var/lib/postgresql/18/docker", "/cache/restore" ]
 
 COPY ./postgres-primary/postgresql.conf /etc/postgresql/postgresql.conf
 COPY ./postgres-primary/pg_hba.conf /etc/postgresql/pg_hba.conf
