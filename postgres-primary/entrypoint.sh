@@ -2,10 +2,10 @@
 
 set -e
 
-if [ ! -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" ]; then
-    cp -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" /var/lib/postgresql/server.crt
-    cp -f "/etc/letsencrypt/live/$HOST_NAME/privkey.pem" /var/lib/postgresql/server.key
-fi
+# if [ ! -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" ]; then
+#     cp -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" /var/lib/postgresql/server.crt
+#     cp -f "/etc/letsencrypt/live/$HOST_NAME/privkey.pem" /var/lib/postgresql/server.key
+# fi
 
 
 chmod 600 /var/lib/postgresql/server.*
