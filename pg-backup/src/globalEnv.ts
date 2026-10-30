@@ -14,7 +14,7 @@ export const globalEnv = {
         region: process.env.AWS_DEFAULT_REGION || "us-east-1",
         bucket: process.env.AWS_S3_BUCKET,
         endpoint: process.env.AWS_ENDPOINT_URL_S3,
-        folder: process.env.PG_S3_BACKUP_FOLDER || "pg-backups",
+        folder: process.env.AWS_S3_BUCKET_FOLDER || "pg-backups",
     },
     source: {
         host: process.env.PG_BACKUP_HOST,
