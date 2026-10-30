@@ -3,13 +3,13 @@
 set -e
 
 # if [ ! -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" ]; then
-#     cp -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" /var/lib/postgresql/server.crt
-#     cp -f "/etc/letsencrypt/live/$HOST_NAME/privkey.pem" /var/lib/postgresql/server.key
+#   cp -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" /var/lib/postgresql/server.crt
+#   cp -f "/etc/letsencrypt/live/$HOST_NAME/privkey.pem" /var/lib/postgresql/server.key
+#   chmod 600 /var/lib/postgresql/server.*
+#   chown postgres:postgres /var/lib/postgresql/server.*
 # fi
 
 
-chmod 600 /var/lib/postgresql/server.*
-chown postgres:postgres /var/lib/postgresql/server.*
 
 # Ensure proper ownership
 chown -R postgres:postgres "$PGDATA"
