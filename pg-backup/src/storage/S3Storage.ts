@@ -1,7 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import { globalEnv } from "../globalEnv.js";
 import BaseStorage from "./BaseStorage.js";
-import { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command, NoSuchKey } from "@aws-sdk/client-s3";
 import { Readable } from "node:stream";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -43,7 +43,7 @@ export default class S3Storage extends BaseStorage {
             }));
             return JSON.parse(await r.Body.transformToString());
         } catch (error) {
-             if (error.name === 'NotFound') {
+             if (error instanceof NoSuchKey || error.name === 'NoSuchKey') {
                 return {}; // File does not exist
             }
             console.error(`Failed to download config from ${Key}`);
