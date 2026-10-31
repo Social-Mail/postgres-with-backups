@@ -14,7 +14,10 @@ const interval = oneMinute * 15;
     let lastFolder;
 
         for(;;) {
-        const { all } = await spawnPromise(`SELECT CASE WHEN pg_is_in_recovery() THEN 'RECOVERING' ELSE 'READY' END;`);
+        const { all } = await spawnPromise("psql", [
+            "-U","postgres",
+            "-c", `SELECT CASE WHEN pg_is_in_recovery() THEN 'RECOVERING' ELSE 'READY' END;`
+        ]);
         if(all.includes("READY")) {
             break;
         }
