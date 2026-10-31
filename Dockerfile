@@ -3,7 +3,7 @@ FROM postgis/postgis:18-3.6-alpine
 ENV PGDATA=/var/lib/postgresql/18/docker
 
 RUN apk add --no-cache gosu
-RUN apk add --no-cache aws-cli openssl nodejs postgresql18-client
+RUN apk add --no-cache aws-cli openssl nodejs postgresql18-client tini
 
 VOLUME [ "/db/wal", "/var/lib/postgresql/18/docker", "/cache/restore" ]
 
@@ -30,5 +30,6 @@ RUN chmod +x ./wal-fetch.sh
 RUN chmod +x ./wal-clean.sh
 RUN chmod +x /docker-entrypoint-initdb.d/create-user.sh
 
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+ENTRYPOINT [ "/sbin/tini", "--", "/app/entrypoint.sh" ]
+
 CMD [ "postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
