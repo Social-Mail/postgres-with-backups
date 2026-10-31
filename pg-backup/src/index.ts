@@ -15,7 +15,7 @@ const interval = oneMinute * 15;
     let lastFolder;
 
         for(;;) {
-        const { all } = await spawnPromise("psql", [
+        const { all } = await spawnPromise("/usr/bin/psql", [
             "-h", globalEnv.source.socket ,
             "-U", globalEnv.source.user,
             "-c", `SELECT CASE WHEN pg_is_in_recovery() THEN 'RECOVERING' ELSE 'READY' END;`
