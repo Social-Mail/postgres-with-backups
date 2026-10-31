@@ -1,6 +1,7 @@
 import { promises } from "timers";
 import { Backup } from "./Backup.js";
 import { spawnPromise } from "./spawnPromise.js";
+import { globalEnv } from "./globalEnv.js";
 
 const oneMinute = 60*1000;
 const interval = oneMinute * 15;
@@ -15,7 +16,8 @@ const interval = oneMinute * 15;
 
         for(;;) {
         const { all } = await spawnPromise("psql", [
-            "-U","postgres",
+            "-h", globalEnv.source.socket ,
+            "-U", globalEnv.source.user,
             "-c", `SELECT CASE WHEN pg_is_in_recovery() THEN 'RECOVERING' ELSE 'READY' END;`
         ]);
         if(all.includes("READY")) {
