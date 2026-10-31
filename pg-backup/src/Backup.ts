@@ -3,9 +3,18 @@ import S3Storage from "./storage/S3Storage.js";
 import { globalEnv } from "./globalEnv.js";
 import { existsSync } from "fs";
 import { spawnPromise } from "./spawnPromise.js";
-import { mkdir, opendir, readdir, unlink } from "fs/promises";
+import { mkdir, opendir, readdir, readFile, unlink, writeFile } from "fs/promises";
 import Encryption from "./Encryption.js";
+import SevenZip from "./SevenZip.js";
 
+
+/**
+ * Strategy changed.
+ * 1. Assume s3 will retain backups
+ * 2. Delete backups when uploaded to s3
+ * 3. Save last manifest
+ * 4. Clean local storage
+ */
 export class Backup {
 
     storage = new S3Storage();
@@ -20,12 +29,16 @@ export class Backup {
 
     async upload() {
 
+        // take full backup only if it does not exist on server...
+
+        // download and decrypt manifest...
+        // this is an important step considering backups will resume from recovery at last known recovery
+        // point
+
         await this.takeBackup(this.backupFolder);
 
-        await this.takeBackup(this.timeFolder, true);
-
         // upload all files...
-        await this.storage.sync({ cloudPath: this.folder, localPath: this.backupFolder });
+        // await this.storage.sync({ cloudPath: this.folder, localPath: this.backupFolder });
 
         await this.cleanUp();
 
@@ -54,118 +67,107 @@ export class Backup {
         }
     }
 
-    async takeBackup(folder: string, diff = false) {
+    async takeBackup(folder: string) {
+
+
+        const tempBackupFolder = "/tmp/pg-backup-" + Date.now();
+
+        await mkdir(tempBackupFolder, { recursive: true });
+
+        const latest = await this.storage.getConfig();
+
+        let latestManifestPath;
+
+        let diff = false;
+        if(latest.latest === this.folder) {
+            diff = true;
+            // save manifest...
+            latestManifestPath = tempBackupFolder + "_manifest";
+            await writeFile(latestManifestPath, latest.manifest);
+        }
+
+        // check if latest is today...
 
         const type = diff ? "diff" : "full";
 
-        const fullBackupName = join(folder, "base.tar.gz.enc");
+        console.log(`[Backup] Taking ${type} backup at ${tempBackupFolder}`);
 
-        // check if storage exists..
-        if (!existsSync(fullBackupName)) {
-            // lets us create a backup...
+        const args = [
+                "-h", globalEnv.source.socket ,
+                "-D", tempBackupFolder,
+                "-U", globalEnv.source.user,
+                "-w",
+                "-P",
+                "-F", "t",
+                "-s", "1"];
 
-            const tempBackupFolder = "/tmp/pg-backup-" + Date.now();
+        if (diff) {
 
-            await mkdir(tempBackupFolder, { recursive: true });
-
-            const latest = await this.storage.getConfig();
-
-            // write latest as this one...
-            await this.storage.saveConfig({ latest: this.folder, time: this.time });
-
-            console.log(`[Backup] Taking ${type} backup at ${tempBackupFolder}`);
-
-            const args = [
-                    "-h", globalEnv.source.socket ,
-                    "-D", tempBackupFolder,
-                    "-U", globalEnv.source.user,
-                    "-w",
-                    "-P",
-                    "-F", "t",
-                    "-s", "1"];
-
-            if (diff) {
-
-                if (!latest.time) {
-                    throw new Error("storage does not contain last config");
-                }
-
-                // find last backup_manifest...
-                const times = await readdir(this.backupFolder, { withFileTypes: true });
-                times.sort((a, b) => a.name.localeCompare(b.name));
-                let manifest = join(this.backupFolder, "backup_manifest");
-                for (const time of times) {
-                    const lastManifest = join(time.parentPath, time.name, "backup_manifest");
-                    if (existsSync(lastManifest)) {
-                        manifest = lastManifest;
-                    }
-                }
-                args.push("-i", manifest );
-            } else {
-                args.push("-R");
-
-                // as we are going to run differential backup
-                // immediately, there is no need to stream and hold the backup process
-                args.push("-X", "n");
+            if (!latest.time) {
+                throw new Error("storage does not contain last config");
             }
+            args.push("-i", latestManifestPath );
+        } else {
+            args.push("-R");
 
-            const { status, all } = await spawnPromise(
-                "/usr/bin/pg_basebackup", args , {
-                        env: {
-                            PGPASSWORD: globalEnv.source.password
-                        }
-                    });
-
-            if (status) {
-                try {
-                    await spawnPromise("rm", ["-rf", tempBackupFolder]);
-                } catch (error) {
-                    console.error(error);
-                }
-                throw new Error(`backup failed ${status} ${all}`);
-            }
-
-            // check if manifest was generated...
-            if(!existsSync(join(tempBackupFolder, "backup_manifest"))) {
-                try {
-                    await spawnPromise("rm", ["-rf", tempBackupFolder]);
-                } catch (error) {
-                    console.error(error);
-                }
-                throw new Error(`backup failed ${status} ${all}`);
-            }
-
-            // encrypt every file here...
-            console.log(`[Backup] Encrypting files`);
-
-            // gzip files one by one first...
-            for(const file of await readdir(tempBackupFolder, { recursive: true, withFileTypes: true })) {
-                if (file.isDirectory()) {
-                    continue;
-                }
-                if (file.name === "backup_manifest") {
-                    continue;
-                }
-                const srcFile = join(file.parentPath, file.name);
-                await spawnPromise("gzip", [srcFile]);
-                if (existsSync(srcFile)) {
-                    await unlink(srcFile);
-                }
-            }
-
-            for(const file of await readdir(tempBackupFolder, { recursive: true, withFileTypes: true })) {
-                if (file.isDirectory()) {
-                    continue;
-                }
-                const deleteFile = file.name !== "backup_manifest";
-                await Encryption.encryptFile(join(file.parentPath, file.name), deleteFile);
-            }
-
-            // after success
-            await spawnPromise("mv", [tempBackupFolder, folder]);
+            // as we are going to run differential backup
+            // immediately, there is no need to stream and hold the backup process
+            args.push("-X", "n");
         }
 
-        console.log(`[Backup] ${type} backup exists at ${folder}`);
+        const { status, all } = await spawnPromise(
+            "/usr/bin/pg_basebackup", args , {
+                    env: {
+                        PGPASSWORD: globalEnv.source.password
+                    }
+                });
+
+        if (status) {
+            try {
+                await spawnPromise("rm", ["-rf", tempBackupFolder]);
+            } catch (error) {
+                console.error(error);
+            }
+            throw new Error(`backup failed ${status} ${all}`);
+        }
+
+        // check if manifest was generated...
+        if(!existsSync(join(tempBackupFolder, "backup_manifest"))) {
+            try {
+                await spawnPromise("rm", ["-rf", tempBackupFolder]);
+            } catch (error) {
+                console.error(error);
+            }
+            throw new Error(`backup failed ${status} ${all}`);
+        }
+
+        // encrypt every file here...
+        console.log(`[Backup] Encrypting files`);
+
+        let manifestPath = join(tempBackupFolder, "backup_manifest");
+
+        const backupFile = tempBackupFolder + "_backup.7z";
+
+        // compress and encrypt
+        await SevenZip.zip({ input: tempBackupFolder, output: backupFile });
+
+        const uploadFolder = diff ? this.time : "";
+
+        await this.storage.upload({
+            cloudPath: join(uploadFolder, "backup.7z"),
+            localPath: backupFile
+        });
+
+        // write latest as this one...
+        await this.storage.saveConfig({
+            latest: this.folder,
+            time: this.time,
+            manifest: await readFile(manifestPath)
+        });
+
+        // after success
+        await spawnPromise("rm", [tempBackupFolder, folder]);
+        
 
     }
 

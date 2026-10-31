@@ -121,6 +121,24 @@ export default class S3Storage extends BaseStorage {
 
     }
 
+    async has(cloudPath) {
+        const Key = join(this.folder, cloudPath);
+        const command = new HeadObjectCommand({
+            Bucket: this.bucket,
+            Key,
+        });
+        try {
+            await this.client.send(command);
+            return true;
+        } catch (error) {
+            if (error.name === 'NotFound') {
+                return false; // File does not exist
+            }
+            throw error;
+        }
+
+    }
+
     async exists(cloudPath, localPath) {
         const Key = join(this.folder, cloudPath);
         const command = new HeadObjectCommand({
