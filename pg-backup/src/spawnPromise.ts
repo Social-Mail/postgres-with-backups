@@ -4,7 +4,7 @@ import { SpawnOptionsWithoutStdio, spawn } from "node:child_process";
 import { color } from "console-log-colors";
 import Mask from "./mask.js";
 
-export const spawnPromise = (path, args?: (string | Mask)[], options?: SpawnOptionsWithoutStdio & { streamLog?: boolean | ((...a: any) => void), logCommand?: boolean, logData?: boolean, logError?: boolean, throwOnFail?: boolean }) => new Promise<{
+export const spawnPromise = (path, args: (string | Mask)[] = [], options?: SpawnOptionsWithoutStdio & { streamLog?: boolean | ((...a: any) => void), logCommand?: boolean, logData?: boolean, logError?: boolean, throwOnFail?: boolean }) => new Promise<{
     get all(): string;
     pid: number;
     out: Buffer[],
