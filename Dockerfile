@@ -20,7 +20,6 @@ COPY ./postgres-primary/wal-fetch.sh ./
 COPY ./postgres-primary/wal-send.sh ./
 
 COPY ./pg-backup/package.json ./
-COPY ./pg-backup/dist ./dist
 COPY ./pg-backup/src ./src
 COPY ./pg-backup/index.js ./
 
