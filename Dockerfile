@@ -23,7 +23,7 @@ COPY ./pg-backup/package.json ./
 COPY ./pg-backup/package-lock.json ./
 COPY ./pg-backup/src ./src
 COPY ./pg-backup/index.js ./
-COPY ./tsconfig.json ./
+COPY ./pg-backup/tsconfig.json ./
 
 RUN npm i
 RUN npx tsc
