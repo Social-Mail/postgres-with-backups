@@ -19,7 +19,11 @@ const interval = oneMinute * 15;
             "-h", globalEnv.source.socket ,
             "-U", globalEnv.source.user,
             "-c", `SELECT CASE WHEN pg_is_in_recovery() THEN 'RECOVERING' ELSE 'READY' END;`
-        ]);
+        ], {
+            env: {
+                PGPASSWORD: globalEnv.source.password
+            }
+        });
         if(all.includes("READY")) {
             break;
         }
