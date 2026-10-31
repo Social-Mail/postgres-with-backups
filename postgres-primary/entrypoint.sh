@@ -80,22 +80,21 @@ else
 fi
 
 (
+
+    while [[ "$(psql -U postgres -t -A -c "SELECT pg_is_in_recovery()")" == "t" ]]; do
+        echo "Database is still in recovery... sleeping"
+        sleep 2
+    done
+
     while true; do
 
-        if  pg_isready -U "postgres" -q; then
-
-            echo "[Backup] Starting long-running BackupTool service..."
-            
-            # Run your infinite script (replace 'start' with whatever argument your daemon takes)
-            node /app/index.js
-            
-            echo "[Backup] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
-            sleep 2
-
-        else
-            echo "[Backup] Postgres is not ready yet..."
-            sleep 3
-        fi
+        echo "[Backup] Starting long-running BackupTool service..."
+        
+        # Run your infinite script (replace 'start' with whatever argument your daemon takes)
+        node /app/index.js
+        
+        echo "[Backup] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
+        sleep 2
 
     done
 ) &
