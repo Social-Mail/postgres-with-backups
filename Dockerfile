@@ -4,7 +4,7 @@ ENV PGDATA=/var/lib/postgresql/18/docker
 ENV PG_RESTORE=/cache/restore
 
 RUN apk add --no-cache gosu
-RUN apk add --no-cache aws-cli openssl nodejs postgresql18-client tini
+RUN apk add --no-cache aws-cli openssl nodejs npm postgresql18-client tini
 
 VOLUME [ "/db/wal", "/var/lib/postgresql/18/docker", "/cache/restore" ]
 
@@ -20,10 +20,11 @@ COPY ./postgres-primary/wal-fetch.sh ./
 COPY ./postgres-primary/wal-send.sh ./
 
 COPY ./pg-backup/package.json ./
-COPY ./pg-backup/dist ./dist
-COPY ./pg-backup/node_modules ./node_modules
 COPY ./pg-backup/src ./src
 COPY ./pg-backup/index.js ./
+
+RUN npm i
+RUN npx tsc
 
 RUN chmod +x ./entrypoint.sh
 RUN chmod +x ./wal-send.sh
