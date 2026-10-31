@@ -94,7 +94,7 @@ fi
 
         else
             echo "[Backup] Postgres is not ready yet..."
-            sleep 3000
+            sleep 3
         fi
 
     done
