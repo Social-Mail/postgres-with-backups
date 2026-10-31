@@ -55,6 +55,6 @@ jobs:
         id: postgres-primary
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
-          context: ./postgres-primary
+          context: .
           push: true
           tags: ghcr.io/social-mail/postgres-with-backups:latest, ghcr.io/social-mail/postgres-with-backups:${{ github.sha }}

@@ -82,10 +82,8 @@ fi
 (
     while true; do
 
-        if [ -f "$PGDATA/recovery.signal" ]; then
+        if  pg_isready -U "postgres" -q; then
 
-           sleep 3000
-        else
             echo "[Backup] Starting long-running BackupTool service..."
             
             # Run your infinite script (replace 'start' with whatever argument your daemon takes)
@@ -94,6 +92,9 @@ fi
             echo "[Backup] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
             sleep 2
 
+        else
+            echo "[Backup] Postgres is not ready yet..."
+            sleep 3000
         fi
 
     done
