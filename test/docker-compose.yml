@@ -2,6 +2,7 @@ services:
   postgres:
     pull_policy: build
     container_name: pg-with-s3-backups
+    restart: unless-stopped
     env_file:
       - .env
     build: 

@@ -72,6 +72,7 @@ else
 
             touch "$PGDATA/recovery.signal"
             touch "$PG_RESTORE/restored.done"
+
         fi
 
     fi
@@ -80,13 +81,21 @@ fi
 
 (
     while true; do
-        echo "[Supervisor] Starting long-running BackupTool service..."
-        
-        # Run your infinite script (replace 'start' with whatever argument your daemon takes)
-        node /app/index.js
-        
-        echo "[Supervisor] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
-        sleep 2
+
+        if [ -f "$PGDATA/recovery.signal" ]; then
+
+           sleep 3000
+        else
+            echo "[Backup] Starting long-running BackupTool service..."
+            
+            # Run your infinite script (replace 'start' with whatever argument your daemon takes)
+            node /app/index.js
+            
+            echo "[Backup] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
+            sleep 2
+
+        fi
+
     done
 ) &
 

@@ -1,6 +1,7 @@
 FROM postgis/postgis:18-3.6-alpine
 
 ENV PGDATA=/var/lib/postgresql/18/docker
+ENV PG_RESTORE=/cache/restore
 
 RUN apk add --no-cache gosu
 RUN apk add --no-cache aws-cli openssl nodejs postgresql18-client tini
