@@ -55,7 +55,7 @@ export default class S3Storage extends BaseStorage {
     async saveConfig(config: any): Promise<void> {
         const Key = join(this.folder, "config.json");
         const Body = JSON.stringify(config);
-        console.log(`Saving config ${Body} at ${Key}`);
+        console.log(`[Backup] Saving config ${Body} at ${Key}`);
 
         await this.client.send(new PutObjectCommand({
             Bucket: this.bucket,
@@ -66,7 +66,7 @@ export default class S3Storage extends BaseStorage {
 
     async download({ cloudPath, localPath }): Promise<void> {
         const Key = join(this.folder, cloudPath);
-        console.log(`Downloading ${cloudPath} to ${localPath}`);
+        console.log(`[Backup] Downloading ${cloudPath} to ${localPath}`);
         const r = await this.client.send(new GetObjectCommand({
             Bucket: this.bucket,
             Key,
@@ -135,7 +135,7 @@ export default class S3Storage extends BaseStorage {
             if(result.ChecksumCRC64NVME === ChecksumCRC64NVME) {
                 return true;
             }
-            console.log(`Checksome didn't match ${ChecksumCRC64NVME} !== ${result.ChecksumCRC64NVME}`);
+            console.log(`[Backup] Checksome didn't match ${ChecksumCRC64NVME} !== ${result.ChecksumCRC64NVME}`);
         } catch (error) {
             if (error.name === 'NotFound') {
                 return false; // File does not exist

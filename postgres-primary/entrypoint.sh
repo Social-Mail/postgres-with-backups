@@ -80,12 +80,6 @@ else
 fi
 
 (
-
-    while [[ "$(psql -U postgres -t -A -c "SELECT pg_is_in_recovery()")" == "t" ]]; do
-        echo "Database is still in recovery... sleeping"
-        sleep 2
-    done
-
     while true; do
 
         echo "[Backup] Starting long-running BackupTool service..."

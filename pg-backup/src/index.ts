@@ -1,5 +1,6 @@
 import { promises } from "timers";
 import { Backup } from "./Backup.js";
+import { spawnPromise } from "./spawnPromise.js";
 
 const oneMinute = 60*1000;
 const interval = oneMinute * 15;
@@ -11,6 +12,18 @@ const interval = oneMinute * 15;
     let retries = 0;
 
     let lastFolder;
+
+        for(;;) {
+        const { all } = await spawnPromise(`SELECT CASE WHEN pg_is_in_recovery() THEN 'RECOVERING' ELSE 'READY' END;`);
+        if(all.includes("READY")) {
+            break;
+        }
+
+        console.log("[Backup] postgres not ready yet");
+        
+        await promises.setTimeout(5*1000);
+    }
+
 
     for(;;) {
 

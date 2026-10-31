@@ -73,7 +73,7 @@ export class Backup {
             // write latest as this one...
             await this.storage.saveConfig({ latest: this.folder, time: this.time });
 
-            console.log(`Taking ${type} backup at ${tempBackupFolder}`);
+            console.log(`[Backup] Taking ${type} backup at ${tempBackupFolder}`);
 
             const args = [
                     "-h", globalEnv.source.socket ,
@@ -136,7 +136,7 @@ export class Backup {
             }
 
             // encrypt every file here...
-            console.log(`Encrypting files`);
+            console.log(`[Backup] Encrypting files`);
 
             // gzip files one by one first...
             for(const file of await readdir(tempBackupFolder, { recursive: true, withFileTypes: true })) {
@@ -165,7 +165,7 @@ export class Backup {
             await spawnPromise("mv", [tempBackupFolder, folder]);
         }
 
-        console.log(`${type} backup exists at ${folder}`);
+        console.log(`[Backup] ${type} backup exists at ${folder}`);
 
     }
 
