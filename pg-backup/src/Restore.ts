@@ -2,7 +2,7 @@ import { dirname, join, relative } from "node:path";
 import S3Storage from "./storage/S3Storage.js"
 // import { promises } from "node:timers";
 import { spawnPromise } from "./spawnPromise.js";
-import { opendir, readdir, writeFile } from "node:fs/promises";
+import { opendir, writeFile } from "node:fs/promises";
 import { globalEnv } from "./globalEnv.js";
 import { existsSync } from "node:fs";
 import FileHelper from "./FileHelper.js";
@@ -25,36 +25,29 @@ export default class Restore {
 
         const pgRestore = globalEnv.folders.restore;
 
-        await spawnPromise("mkdir", ["-p", dirname(pgRestore)]);
+        // await spawnPromise("mkdir", ["-p", dirname(pgRestore)]);
 
-        await FileHelper.clearFolder(pgRestore);
+        // await FileHelper.clearFolder(pgRestore);
 
         // load all into a temp folder...
         const tmpRoot = "/tmp/backups/" + Date.now();
 
         // download everything...
         for await(const { cloudPath } of this.storage.list(folder)) {
-            const localPath = join(tmpRoot, cloudPath) + "_downloaded.7z";
-            await this.storage.download({ cloudPath, localPath });
+            const sZipFilePath = join(tmpRoot, cloudPath) + "_downloaded.7z";
+            await this.storage.download({ cloudPath, localPath: sZipFilePath });
 
-            const root = dirname(cloudPath);
+            const localFolder = join(pgRestore, relative(folder, dirname(cloudPath)));
 
-            const localFolder = join(tmpRoot, root);
+            await spawnPromise("mkdir", ["-p", localFolder]);
 
-            await SevenZip.unzip({ input: localPath, output: localFolder });
+            await SevenZip.unzip({
+                input: sZipFilePath,
+                output: localFolder
+            });
 
-            await spawnPromise("rm", [localPath, "-rf"]);
+            await spawnPromise("rm", [sZipFilePath, "-rf"]);
         }
-
-        const folders = await readdir(tmpRoot, { withFileTypes: true });
-        for(const { name, parentPath } of folders) {
-            const source = join(parentPath, name);
-            const relativeFolder = relative(tmpRoot, source);
-            const dest = join(pgRestore, relativeFolder);
-            await spawnPromise("mv", [ source, dest])
-        }
-
-        folders.length = 0;
 
         const increments = [];
 

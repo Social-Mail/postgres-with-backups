@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { spawnPromise } from "./spawnPromise.js";
+import Mask from "./mask.js";
 
 export default class SevenZip {
 
@@ -14,7 +15,7 @@ export default class SevenZip {
 
         const password = await readFile("/app/.pwd-hash", "utf-8");
 
-        return await spawnPromise(`7z`, ["a", output, input  + "/*", "-p" + password], {
+        return await spawnPromise(`7z`, ["a", output, input  + "/*", new Mask("-p" + password, 2)], {
             timeout,
             logCommand: true
         });
@@ -30,7 +31,7 @@ export default class SevenZip {
         password?: string
     }) {
         const password = await readFile("/app/.pwd-hash", "utf-8");
-        return await spawnPromise(`7z`, ["x", input, "-p" + password, "-o" + output], {
+        return await spawnPromise(`7z`, ["x", input, new Mask("-p" + password, 2), "-o" + output], {
             timeout: 15*60*1000
         });
     }

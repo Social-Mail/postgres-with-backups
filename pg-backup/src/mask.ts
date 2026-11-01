@@ -1,5 +1,5 @@
 export default class Mask {
-    constructor(public readonly value: string) {
+    constructor(public readonly value: string, public maskCharIndexFrom = 0) {
         
     }
 
@@ -8,6 +8,6 @@ export default class Mask {
     }
 
     toString() {
-        return "".padStart(this.value.length + 5, "*");
+        return this.value.substring(0,this.maskCharIndexFrom) + "".padStart(this.value.length + 5, "*");
     }
 }
