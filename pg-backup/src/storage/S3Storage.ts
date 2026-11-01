@@ -54,8 +54,9 @@ export default class S3Storage extends BaseStorage {
 
     async saveConfig(config: any): Promise<void> {
         const Key = join(this.folder, "config.json");
-        const Body = JSON.stringify({ ... config, manifest: ".."});
-        console.log(`[Backup] Saving config ${Body} at ${Key}`);
+        const Body = JSON.stringify(config);
+        const { latest, time } = config;
+        console.log(`[Backup] Saving config latest=${latest}, time=${time} at ${Key}`);
 
         await this.client.send(new PutObjectCommand({
             Bucket: this.bucket,
