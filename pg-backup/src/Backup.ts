@@ -84,7 +84,7 @@ export class Backup {
 
         const type = diff ? "diff" : "full";
 
-        console.log(`[Backup] Taking ${type} backup at ${tempBackupFolder}`);
+        console.log(`Taking ${type} backup at ${tempBackupFolder}`);
 
         const args = [
                 "-h", globalEnv.source.socket ,
@@ -136,7 +136,7 @@ export class Backup {
         }
 
         // encrypt every file here...
-        console.log(`[Backup] Encrypting files`);
+        console.log(`Encrypting files`);
 
         let manifestPath = join(tempBackupFolder, "backup_manifest");
 

@@ -65,7 +65,7 @@ export const spawnPromise = (path, args: (string | Mask)[] = [], options?: Spawn
         const errorText = color.red(error.stack ?? error.toString());
         all.push(error.stack ?? error.toString());
         if (logData || logError) {
-            console.error(`[Backup] ${errorText.replaceAll("\n", "\n[Backup] ")}`);
+            console.error(`${errorText.replaceAll("\n", "\n")}`);
         }
         reject(error);
     });
@@ -77,13 +77,13 @@ export const spawnPromise = (path, args: (string | Mask)[] = [], options?: Spawn
             }
             if (throwOnFail) {
                 clear();
-                reject(new Error(all.join("\n[Backup] ")));
+                reject(new Error(all.join("\n")));
                 return;
             }
         }
         if (logCommand) {
             if (logData) {
-                console.log("[Backup] " + all.join("\n[Backup] "));
+                console.log("" + all.join("\n"));
             }
         }
         clear();

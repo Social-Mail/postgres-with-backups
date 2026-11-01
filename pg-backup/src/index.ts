@@ -28,7 +28,7 @@ const interval = oneMinute * 15;
             break;
         }
 
-        console.log("[Backup] postgres not ready yet");
+        console.log("postgres not ready yet");
         
         await promises.setTimeout(5*1000);
     }

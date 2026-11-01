@@ -18,7 +18,7 @@ export default class Restore {
     async restore() {
         const folder = process.env.PG_RESTORE_DAY || (await this.storage.getConfig()).latest;
         if(!folder) {
-            console.log(`[Backup] No backups exist to restore... `)
+            console.log(`No backups exist to restore... `)
             return;
         }
 

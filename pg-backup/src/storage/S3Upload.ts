@@ -29,7 +29,7 @@ export default class S3Upload {
 
         this.ChecksumCRC64NVME = await CRC.CRC64NVME({ filePath: this.filePath });
 
-        console.log(`[Backup] Uploading... ${this.filePath} to ${this.Key} progress 0%`)
+        console.log(`Uploading... ${this.filePath} to ${this.Key} progress 0%`)
     
         const uploadRequest = await this.client.send(new CreateMultipartUploadCommand({
             Bucket: this.Bucket,
@@ -55,7 +55,7 @@ export default class S3Upload {
             all.push(await this.tm.queueRun(() => this.uploadBlock(partNumber, uploadRequest, buffer)));
             sent += buffer.length;
             if (sent < total) {
-                console.log(`[Backup] Uploading... ${this.filePath} to ${this.Key} progress ${(sent*100/total).toFixed(2)}%`)
+                console.log(`Uploading... ${this.filePath} to ${this.Key} progress ${(sent*100/total).toFixed(2)}%`)
             }
         }
 
@@ -72,7 +72,7 @@ export default class S3Upload {
             }
         }));
 
-        console.log(`[Backup] Uploaded ${this.filePath} to ${this.Key} with checksum ${this.ChecksumCRC64NVME}`)
+        console.log(`Uploaded ${this.filePath} to ${this.Key} with checksum ${this.ChecksumCRC64NVME}`)
 
     }
 
