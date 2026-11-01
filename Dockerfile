@@ -6,7 +6,7 @@ ENV PG_RESTORE=/cache/restore
 RUN apk add --no-cache gosu
 RUN apk add --no-cache aws-cli openssl nodejs npm postgresql18-client tini 7zip
 
-VOLUME [ "/db/wal", "/var/lib/postgresql/18/docker", "/cache/restore" ]
+VOLUME [ "/db/wal", "/var/lib/postgresql/18/docker", "/cache" ]
 
 COPY ./postgres-primary/postgresql.conf /etc/postgresql/postgresql.conf
 COPY ./postgres-primary/pg_hba.conf /etc/postgresql/pg_hba.conf

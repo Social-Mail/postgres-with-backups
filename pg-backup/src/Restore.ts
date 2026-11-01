@@ -2,10 +2,10 @@ import { dirname, join, relative } from "node:path";
 import S3Storage from "./storage/S3Storage.js"
 // import { promises } from "node:timers";
 import { spawnPromise } from "./spawnPromise.js";
-import { opendir, writeFile } from "node:fs/promises";
+import { opendir, readdir, writeFile } from "node:fs/promises";
 import { globalEnv } from "./globalEnv.js";
 import { existsSync } from "node:fs";
-import FileHelper from "./FileHelper.js";
+// import FileHelper from "./FileHelper.js";
 import SevenZip from "./SevenZip.js";
 
 export default class Restore {
@@ -32,12 +32,18 @@ export default class Restore {
         // load all into a temp folder...
         const tmpRoot = "/tmp/backups/" + Date.now();
 
+
+        // due to nature of backups stored...
+        // we need to replace time for root backup as 0z
+
         // download everything...
         for await(const { cloudPath } of this.storage.list(folder)) {
             const sZipFilePath = join(tmpRoot, cloudPath) + "_downloaded.7z";
             await this.storage.download({ cloudPath, localPath: sZipFilePath });
 
-            const localFolder = join(pgRestore, relative(folder, dirname(cloudPath)));
+            const cloudFolder = relative(folder, dirname(cloudPath)) || "-0z";
+
+            const localFolder = join(pgRestore, cloudFolder);
 
             await spawnPromise("mkdir", ["-p", localFolder]);
 
@@ -45,6 +51,20 @@ export default class Restore {
                 input: sZipFilePath,
                 output: localFolder
             });
+
+            for(const tarFile of await readdir(localFolder)) {
+                if(!tarFile.endsWith(".tar")) {
+                    continue;
+                }
+
+                const toFolder = tarFile.endsWith("pg_wal.tar")
+                    ? join(localFolder, "pg_wal")
+                    : localFolder;
+
+                await spawnPromise("tar", ["-xf", join(localFolder, tarFile), "-C", toFolder]);
+
+                await spawnPromise("rm", [tarFile, "-rf"]);
+            }
 
             await spawnPromise("rm", [sZipFilePath, "-rf"]);
         }
@@ -62,6 +82,8 @@ export default class Restore {
             }
         }
         increments.sort((a, b) => a.localeCompare(b));
+
+        console.log(increments.join("\r\n"));
 
         await writeFile(join(pgRestore, "restore.sh"), `#!/bin/sh
 pg_combinebackup -o ${globalEnv.folders.data} ${increments.join(" ")}
