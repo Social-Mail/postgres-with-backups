@@ -106,7 +106,7 @@ export class Backup {
 
             // as we are going to run differential backup
             // immediately, there is no need to stream and hold the backup process
-            args.push("-X", "n");
+            args.push("-X", "f");
         }
 
         const { status, all } = await spawnPromise(
