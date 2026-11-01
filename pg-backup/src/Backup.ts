@@ -92,7 +92,7 @@ export class Backup {
                 "-U", globalEnv.source.user,
                 "-w",
                 "-P",
-                "-F", "t",
+                "-F", "p",
                 "-s", "1"];
 
         if (diff) {
