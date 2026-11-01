@@ -150,7 +150,7 @@ export class Backup {
         // compress and encrypt
         await SevenZip.zip({ input: tempBackupFolder, output: backupFile });
 
-        const uploadFolder = diff ? this.time : "";
+        const uploadFolder = diff ? join(this.folder, this.time) : this.folder;
 
         await this.storage.upload({
             cloudPath: join(uploadFolder, "backup.7z"),
