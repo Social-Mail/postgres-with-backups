@@ -102,7 +102,7 @@ export class Backup {
             }
             args.push("-i", latestManifestPath );
         } else {
-            args.push("-R");
+            // args.push("-R");
 
             // as we are going to run differential backup
             // immediately, there is no need to stream and hold the backup process
