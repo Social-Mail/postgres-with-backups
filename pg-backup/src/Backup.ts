@@ -3,7 +3,7 @@ import S3Storage from "./storage/S3Storage.js";
 import { globalEnv } from "./globalEnv.js";
 import { existsSync } from "fs";
 import { spawnPromise } from "./spawnPromise.js";
-import { mkdir, opendir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import SevenZip from "./SevenZip.js";
 
 
