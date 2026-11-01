@@ -57,13 +57,15 @@ export default class Restore {
                     continue;
                 }
 
+                const tarFilePath = join(localFolder, tarFile);
+
                 const toFolder = tarFile.endsWith("pg_wal.tar")
                     ? join(localFolder, "pg_wal")
                     : localFolder;
 
-                await spawnPromise("tar", ["-xf", join(localFolder, tarFile), "-C", toFolder]);
+                await spawnPromise("tar", ["-xf", tarFilePath, "-C", toFolder]);
 
-                await spawnPromise("rm", [tarFile, "-rf"]);
+                await spawnPromise("rm", [tarFilePath, "-rf"]);
             }
 
             await spawnPromise("rm", [sZipFilePath, "-rf"]);
