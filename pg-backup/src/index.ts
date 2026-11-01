@@ -22,7 +22,10 @@ const interval = oneMinute * 15;
         ], {
             env: {
                 PGPASSWORD: globalEnv.source.password
-            }
+            },
+            throwOnFail: false,
+            logData: false,
+            logError: false
         });
         if(all.includes("READY")) {
             break;
