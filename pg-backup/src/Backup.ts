@@ -77,6 +77,8 @@ export class Backup {
             diff = true;
             // save manifest...
             latestManifestPath = tempBackupFolder + "_manifest";
+            const { "System-Identifier": si } = latest.manifest;
+            console.log(`Full backup exists with system-identifier=${si}`);
             await writeFile(latestManifestPath, JSON.stringify(latest.manifest), "utf-8");
         }
 
