@@ -5,7 +5,6 @@ import { existsSync } from "fs";
 import { spawnPromise } from "./spawnPromise.js";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import SevenZip from "./SevenZip.js";
-import BigIntJson from "./storage/BigIntJson.js";
 
 
 /**
@@ -78,9 +77,7 @@ export class Backup {
             diff = true;
             // save manifest...
             latestManifestPath = tempBackupFolder + "_manifest";
-            const { "System-Identifier": si } = latest.manifest;
-            console.log(`Full backup exists with system-identifier=${si}`);
-            await writeFile(latestManifestPath, JSON.stringify(latest.manifest), "utf-8");
+            await writeFile(latestManifestPath, latest.manifest, "utf-8");
         }
 
         // check if latest is today...
@@ -159,7 +156,7 @@ export class Backup {
         await this.storage.saveConfig({
             latest: this.folder,
             time: this.time,
-            manifest: BigIntJson.parse(await readFile(manifestPath, "utf-8"))
+            manifest: await readFile(manifestPath, "utf-8")
         });
 
         // after success

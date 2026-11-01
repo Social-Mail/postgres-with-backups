@@ -8,7 +8,6 @@ import { dirname, join } from "node:path";
 import CRC from "./CRC.js";
 import S3Upload from "./S3Upload.js";
 import Encryption from "../Encryption.js";
-import BigIntJson from "./BigIntJson.js";
 
 export default class S3Storage extends BaseStorage {
 
@@ -42,7 +41,7 @@ export default class S3Storage extends BaseStorage {
                 Bucket: this.bucket,
                 Key
             }));
-            return BigIntJson.parse(await r.Body.transformToString());
+            return JSON.parse(await r.Body.transformToString());
         } catch (error) {
              if (error instanceof NoSuchKey || error.name === 'NoSuchKey') {
                 return {}; // File does not exist
@@ -56,8 +55,8 @@ export default class S3Storage extends BaseStorage {
     async saveConfig(config: any): Promise<void> {
         const Key = join(this.folder, "config.json");
         const Body = JSON.stringify(config);
-        const { latest, time, manifest: { "System-Identifier": si} } = config;
-        console.log(`Saving config latest=${latest}, time=${time}, system-identifier=${si} at ${Key}`);
+        const { latest, time} = config;
+        console.log(`Saving config latest=${latest}, time=${time} at ${Key}`);
 
         await this.client.send(new PutObjectCommand({
             Bucket: this.bucket,
@@ -155,7 +154,7 @@ export default class S3Storage extends BaseStorage {
             if(result.ChecksumCRC64NVME === ChecksumCRC64NVME) {
                 return true;
             }
-            console.log(`Checksome didn't match ${ChecksumCRC64NVME} !== ${result.ChecksumCRC64NVME}`);
+            console.log(`Checksum didn't match ${ChecksumCRC64NVME} !== ${result.ChecksumCRC64NVME}`);
         } catch (error) {
             if (error.name === 'NotFound') {
                 return false; // File does not exist
