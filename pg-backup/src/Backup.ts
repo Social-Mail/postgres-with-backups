@@ -52,7 +52,6 @@ export class Backup {
                 if (current === this.backupFolder) {
                     current = void 0;
                 }
-                break;
             }
         }
         if (current) {
