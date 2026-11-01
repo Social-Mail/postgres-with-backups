@@ -91,9 +91,11 @@ export class Backup {
                 "-D", tempBackupFolder,
                 "-U", globalEnv.source.user,
                 "-w",
+                "-X","f",
                 "-P",
                 "-F", "p",
-                "-s", "1"];
+                "-s", "1",
+                ];
 
         if (diff) {
 
@@ -101,12 +103,6 @@ export class Backup {
                 throw new Error("storage does not contain last config");
             }
             args.push("-i", latestManifestPath );
-        } else {
-            // args.push("-R");
-
-            // as we are going to run differential backup
-            // immediately, there is no need to stream and hold the backup process
-            args.push("-X", "f");
         }
 
         const { status, all } = await spawnPromise(
