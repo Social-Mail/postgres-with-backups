@@ -2,7 +2,7 @@ import { dirname, join, relative } from "node:path";
 import S3Storage from "./storage/S3Storage.js"
 // import { promises } from "node:timers";
 import { spawnPromise } from "./spawnPromise.js";
-import { opendir, readdir, writeFile } from "node:fs/promises";
+import { opendir, writeFile } from "node:fs/promises";
 import { globalEnv } from "./globalEnv.js";
 import { existsSync } from "node:fs";
 // import FileHelper from "./FileHelper.js";
