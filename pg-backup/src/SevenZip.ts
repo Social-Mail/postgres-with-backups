@@ -14,7 +14,7 @@ export default class SevenZip {
 
         const password = await readFile("/app/.pwd-hash", "utf-8");
 
-        return await spawnPromise(`7z`, ["a", output + "/*", input, "-p" + password], {
+        return await spawnPromise(`7z`, ["a", output, input  + "/*", "-p" + password], {
             timeout,
             logCommand: true
         });
