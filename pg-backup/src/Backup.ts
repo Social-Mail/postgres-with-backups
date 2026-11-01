@@ -82,7 +82,7 @@ export class Backup {
             diff = true;
             // save manifest...
             latestManifestPath = tempBackupFolder + "_manifest";
-            await writeFile(latestManifestPath, latest.manifest);
+            await writeFile(latestManifestPath, JSON.stringify(latest.manifest), "utf-8");
         }
 
         // check if latest is today...
@@ -161,7 +161,7 @@ export class Backup {
         await this.storage.saveConfig({
             latest: this.folder,
             time: this.time,
-            manifest: await readFile(manifestPath)
+            manifest: JSON.parse(await readFile(manifestPath, "utf-8"))
         });
 
         // after success
