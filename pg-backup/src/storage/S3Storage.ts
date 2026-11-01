@@ -8,6 +8,7 @@ import { dirname, join } from "node:path";
 import CRC from "./CRC.js";
 import S3Upload from "./S3Upload.js";
 import Encryption from "../Encryption.js";
+import BigIntJson from "./BigIntJson.js";
 
 export default class S3Storage extends BaseStorage {
 
@@ -41,7 +42,7 @@ export default class S3Storage extends BaseStorage {
                 Bucket: this.bucket,
                 Key
             }));
-            return JSON.parse(await r.Body.transformToString());
+            return BigIntJson.parse(await r.Body.transformToString());
         } catch (error) {
              if (error instanceof NoSuchKey || error.name === 'NoSuchKey') {
                 return {}; // File does not exist

@@ -5,6 +5,7 @@ import { existsSync } from "fs";
 import { spawnPromise } from "./spawnPromise.js";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import SevenZip from "./SevenZip.js";
+import BigIntJson from "./storage/BigIntJson.js";
 
 
 /**
@@ -158,7 +159,7 @@ export class Backup {
         await this.storage.saveConfig({
             latest: this.folder,
             time: this.time,
-            manifest: JSON.parse(await readFile(manifestPath, "utf-8"))
+            manifest: BigIntJson.parse(await readFile(manifestPath, "utf-8"))
         });
 
         // after success
