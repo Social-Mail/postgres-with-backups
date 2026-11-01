@@ -1,4 +1,4 @@
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { globalEnv } from "../globalEnv.js";
 import BaseStorage from "./BaseStorage.js";
 import { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command, NoSuchKey } from "@aws-sdk/client-s3";
@@ -7,7 +7,6 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import CRC from "./CRC.js";
 import S3Upload from "./S3Upload.js";
-import Encryption from "../Encryption.js";
 
 export default class S3Storage extends BaseStorage {
 
@@ -76,7 +75,7 @@ export default class S3Storage extends BaseStorage {
         if (!existsSync(dir)) {
             await mkdir(dir, { recursive: true });
         }
-        await Encryption.decryptFile(localPath, r.Body as Readable);
+        await writeFile(localPath, r.Body as Readable);
     }
 
     async upload({ cloudPath, localPath }) {

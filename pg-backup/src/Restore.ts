@@ -6,6 +6,7 @@ import { mkdir, opendir, readdir, unlink, writeFile } from "node:fs/promises";
 import { globalEnv } from "./globalEnv.js";
 import { existsSync } from "node:fs";
 import FileHelper from "./FileHelper.js";
+import SevenZip from "./SevenZip.js";
 
 export default class Restore {
 
@@ -33,19 +34,17 @@ export default class Restore {
 
         // download everything...
         for await(const { cloudPath } of this.storage.list(folder)) {
-            const localPath = join(tmpRoot, cloudPath).replace(".enc", "");
+            const localPath = join(tmpRoot, cloudPath) + "_downloaded.7z";
             await this.storage.download({ cloudPath, localPath });
-            if (localPath.endsWith(".tar.gz")) {
-                const localFolder = localPath.endsWith("pg_wal.tar.gz")
-                    ? join(dirname(localPath), "pg_wal")
-                    : dirname(localPath);
-                await mkdir(localFolder, { recursive: true });
-                await spawnPromise("tar", ["-xvzf", localPath, "-C", localFolder]);
-                await unlink(localPath);
-            }
+
+            const root = dirname(cloudPath);
+
+            const localFolder = join(tmpRoot, root);
+
+            await SevenZip.unzip({ input: localPath, output: localFolder });
+
+            await spawnPromise("rm", [localPath, "-rf"]);
         }
-
-
 
         const folders = await readdir(tmpRoot, { withFileTypes: true });
         for(const { name, parentPath } of folders) {
