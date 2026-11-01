@@ -52,21 +52,21 @@ export default class Restore {
                 output: localFolder
             });
 
-            for(const tarFile of await readdir(localFolder)) {
-                if(!tarFile.endsWith(".tar")) {
-                    continue;
-                }
+            // for(const tarFile of await readdir(localFolder)) {
+            //     if(!tarFile.endsWith(".tar")) {
+            //         continue;
+            //     }
 
-                const tarFilePath = join(localFolder, tarFile);
+            //     const tarFilePath = join(localFolder, tarFile);
 
-                const toFolder = tarFile.endsWith("pg_wal.tar")
-                    ? join(localFolder, "pg_wal")
-                    : localFolder;
+            //     const toFolder = tarFile.endsWith("pg_wal.tar")
+            //         ? join(localFolder, "pg_wal")
+            //         : localFolder;
 
-                await spawnPromise("tar", ["-xf", tarFilePath, "-C", toFolder]);
+            //     await spawnPromise("tar", ["-xf", tarFilePath, "-C", toFolder]);
 
-                await spawnPromise("rm", [tarFilePath, "-rf"]);
-            }
+            //     await spawnPromise("rm", [tarFilePath, "-rf"]);
+            // }
 
             await spawnPromise("rm", [sZipFilePath, "-rf"]);
         }
