@@ -5,7 +5,7 @@ set -e
 if [ "$PG_TEST" == "test" ]; then
    echo "test wal-fetch $1 < $2"
 else
-    aws s3 cp "s3://$AWS_S3_BUCKET_FOLDER/$AWS_S3_BUCKET_WAL_FOLDER/$1.gz.enc" "$2.gz.enc"
+    aws s3 cp "s3://$AWS_S3_BUCKET_FOLDER/$AWS_S3_BUCKET_FOLDER/wal/$1.gz.enc" "$2.gz.enc"
     openssl enc -d -aes-256-cbc -pbkdf2 -in "$2.gz.enc" -out "$2.gz" -pass file:/app/.pwd-hash
     gunzip -c "$2.gz" > $2
     rm "$2.gz.enc"
