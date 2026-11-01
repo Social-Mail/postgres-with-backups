@@ -165,7 +165,7 @@ export class Backup {
         });
 
         // after success
-        await spawnPromise("rm", [tempBackupFolder]);
+        await spawnPromise("rm", [tempBackupFolder, "-rf"]);
         
 
     }
