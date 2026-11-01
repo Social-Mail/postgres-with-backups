@@ -39,27 +39,27 @@ export class Backup {
         // upload all files...
         // await this.storage.sync({ cloudPath: this.folder, localPath: this.backupFolder });
 
-        await this.cleanUp();
+        // await this.cleanUp();
 
     }
 
-    async cleanUp() {
-        let current = void 0;
-        const ds = await opendir(globalEnv.folders.backup);
-        for await (const dir of ds) {
-            if(dir.isDirectory()) {
-                current = join(dir.parentPath, dir.name);
-                if (current === this.backupFolder) {
-                    current = void 0;
-                }
-            }
-        }
-        if (current) {
-            if(existsSync(current)) {
-                await spawnPromise("rm", ["-rf", current]);
-            }
-        }
-    }
+    // async cleanUp() {
+    //     let current = void 0;
+    //     const ds = await opendir(globalEnv.folders.backup);
+    //     for await (const dir of ds) {
+    //         if(dir.isDirectory()) {
+    //             current = join(dir.parentPath, dir.name);
+    //             if (current === this.backupFolder) {
+    //                 current = void 0;
+    //             }
+    //         }
+    //     }
+    //     if (current) {
+    //         if(existsSync(current)) {
+    //             await spawnPromise("rm", ["-rf", current]);
+    //         }
+    //     }
+    // }
 
     async takeBackup(folder: string) {
 
