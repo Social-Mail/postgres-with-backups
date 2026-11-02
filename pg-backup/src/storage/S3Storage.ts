@@ -96,7 +96,7 @@ export default class S3Storage extends BaseStorage {
         const list = [];
         for await(const key of this.list(folder)) {
             const newPath = join(restoreFolder, key.cloudPath);
-            list.push(key.cloudPath);
+            list.push(join(this.folder, folder, key.cloudPath));
             const copy = new S3Copy(this.client, {
                 SourceBucket: this.bucket,
                 SourceKey: join(this.folder, key.cloudPath),
@@ -105,11 +105,6 @@ export default class S3Storage extends BaseStorage {
             });
 
             await copy.upload();
-            // await this.client.send(new CopyObjectCommand({
-            //     Bucket: this.bucket,
-            //     Key: newPath,
-            //     CopySource: this.bucket + "/" + key.cloudPath
-            // }));
         }
         for(const Key of list) {
             await this.client.send(new DeleteObjectCommand({
