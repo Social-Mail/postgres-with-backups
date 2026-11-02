@@ -2,7 +2,7 @@ import { dirname, join, relative } from "node:path";
 import S3Storage from "./storage/S3Storage.js"
 // import { promises } from "node:timers";
 import { spawnPromise } from "./spawnPromise.js";
-import { opendir, writeFile } from "node:fs/promises";
+import { opendir } from "node:fs/promises";
 import { globalEnv } from "./globalEnv.js";
 import { existsSync } from "node:fs";
 // import FileHelper from "./FileHelper.js";
@@ -85,14 +85,13 @@ export default class Restore {
         }
         increments.sort((a, b) => a.localeCompare(b));
 
-        console.log(increments.join("\r\n"));
+        await spawnPromise("pg_combinebackup", [
+            "-o",
+            globalEnv.folders.data,
+            ... increments
+        ]);
 
-        await writeFile(join(pgRestore, "restore.sh"), `#!/bin/sh
-pg_combinebackup -o ${globalEnv.folders.data} ${increments.join(" ")}
-`);
-
-        await spawnPromise("chmod", ["+x", join(pgRestore, "restore.sh")]);
-
+        await spawnPromise("touch", [`${globalEnv.folders.data}/recovery.signal`]);
 
     }
 }

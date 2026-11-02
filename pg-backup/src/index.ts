@@ -14,21 +14,25 @@ const interval = oneMinute * 15;
 
     let lastFolder;
 
-        for(;;) {
-        const { all } = await spawnPromise("/usr/bin/psql", [
-            "-h", globalEnv.source.socket ,
-            "-U", globalEnv.source.user,
-            "-c", `SELECT CASE WHEN pg_is_in_recovery() THEN 'RECOVERING' ELSE 'READY' END;`
-        ], {
-            env: {
-                PGPASSWORD: globalEnv.source.password
-            },
-            throwOnFail: false,
-            logData: false,
-            logError: false
-        });
-        if(all.includes("READY")) {
-            break;
+    for(;;) {
+        try {
+            const { all } = await spawnPromise("/usr/bin/psql", [
+                "-h", globalEnv.source.socket ,
+                "-U", globalEnv.source.user,
+                "-c", `SELECT CASE WHEN pg_is_in_recovery() THEN 'RECOVERING' ELSE 'READY' END;`
+            ], {
+                env: {
+                    PGPASSWORD: globalEnv.source.password
+                },
+                throwOnFail: false,
+                logData: false,
+                logError: false
+            });
+            if(all.includes("READY")) {
+                break;
+            }
+        } catch {
+            // do nothing...     
         }
 
         console.log("postgres not ready yet");

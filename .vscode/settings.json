@@ -52,6 +52,7 @@
         "IDKIM",
         "igmu",
         "INTERNALDATE",
+        "keepalives",
         "letsencrypt",
         "libvorbis",
         "libvpx",
