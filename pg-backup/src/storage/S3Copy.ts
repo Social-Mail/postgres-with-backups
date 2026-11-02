@@ -36,9 +36,6 @@ export default class S3Copy {
 
         let i = 0;
 
-
-        console.log(`Checking key size for ${this.SourceBucket}/${this.SourceKey}`);
-
         const headResponse = await this.client.send(
             new HeadObjectCommand({ Bucket: this.SourceBucket, Key: this.SourceKey })
         );
