@@ -7,8 +7,6 @@ export default class S3Copy {
     public readonly Key: string;
     public readonly SourceBucket: string;
     public readonly SourceKey: string;
-    public readonly ChecksumAlgorithm = "CRC64NVME";
-    public readonly ChecksumType = "FULL_OBJECT";
 
     tm: TaskManager;
 
@@ -58,7 +56,7 @@ export default class S3Copy {
             Bucket: this.Bucket,
             Key: this.Key,
             UploadId: uploadRequest.UploadId,
-            ChecksumType: this.ChecksumType,
+            // ChecksumType: this.ChecksumType,
             MultipartUpload: {
                 Parts
             }
