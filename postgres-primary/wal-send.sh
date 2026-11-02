@@ -3,9 +3,8 @@
 if [ "$PG_TEST" == "test" ]; then
    echo "test wal-send $1 > $2"
 else
-    gzip -c "$1" > "$1.gz"
-    openssl enc -aes-256-cbc -pbkdf2 -in "$1.gz" -out "$1.gz.enc" -pass file:/app/.pwd-hash
-    aws s3 cp "$1.gz.enc" "s3://$AWS_S3_BUCKET/$AWS_S3_BUCKET_FOLDER/wal/$2.gz.enc"
-    rm "$1.gz.enc"
-    rm "$1.gz"
+    PWD_HASH=content=$(cat "/app/.pwd-hash")
+    aws s3 cp "$1.7z" "s3://$AWS_S3_BUCKET/$AWS_S3_BUCKET_FOLDER/wal/$2.7z"
+    7z a "$2.7z" "$2" -p$PWD_HASH
+    rm "$1.7z"
 fi

@@ -25,7 +25,7 @@ chown -R postgres:postgres /db/wal
 chown -R postgres:postgres /etc/postgresql/postgresql.conf
 chown -R postgres:postgres /etc/postgresql/pg_hba.conf
 
-echo "$PG_BACKUP_STORAGE_S3_ENC_PASSWORD" > /app/.pwd
+echo "$BACKUP_ENC_PASSWORD" > /app/.pwd
 sha256sum /app/.pwd | head -c 32 > /app/.pwd-hash
 rm /app/.pwd
 chown -R postgres:postgres /app/.pwd-hash
