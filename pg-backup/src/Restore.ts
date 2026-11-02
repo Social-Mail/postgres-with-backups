@@ -40,8 +40,10 @@ export default class Restore {
 
         // if we have restore folder and folder, we need to delete restore folder
         if(await this.storage.has(folder + "/backup.7z")) {
-            // delete move entire restore folder...
-        await this.storage.move(restoreFolder, restoreFolder + "." + Date.now());
+            if (await this.storage.has(restoreFolder + "/backup.7z")) {
+                // delete move entire restore folder...
+                await this.storage.move(restoreFolder, restoreFolder + "." + Date.now());
+            }
         }
 
         await this.storage.move(folder, restoreFolder);
