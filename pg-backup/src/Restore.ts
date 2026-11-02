@@ -17,7 +17,10 @@ export default class Restore {
     }
 
     async restore() {
-        const folder = process.env.PG_RESTORE_DAY || (await this.storage.getConfig()).latest;
+
+        const config = await this.storage.getConfig();
+
+        let folder = process.env.PG_RESTORE_DAY || config.latest;
         if(!folder) {
             console.log(`No backups exist to restore... `)
             return;
@@ -32,6 +35,18 @@ export default class Restore {
         // load all into a temp folder...
         const tmpRoot = "/tmp/backups/" + Date.now();
 
+        // we need to change latest to latest.restore...
+        const restoreFolder = folder + ".restore";
+
+        await this.storage.move(folder, restoreFolder);
+
+        folder = restoreFolder;
+
+        // this will keep copy but force recovered database to
+        // take full backup
+        await this.storage.saveConfig({
+            old: config
+        })
 
         // due to nature of backups stored...
         // we need to replace time for root backup as 0z

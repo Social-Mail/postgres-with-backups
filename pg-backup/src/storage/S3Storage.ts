@@ -1,15 +1,15 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { globalEnv } from "../globalEnv.js";
 import BaseStorage from "./BaseStorage.js";
-import { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command, NoSuchKey } from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command, NoSuchKey, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "node:stream";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import CRC from "./CRC.js";
 import S3Upload from "./S3Upload.js";
+import S3Copy from "./S3Copy.js";
 
 export default class S3Storage extends BaseStorage {
-
     client: S3Client;
     bucket: string;
     prefix: string;
@@ -91,6 +91,35 @@ export default class S3Storage extends BaseStorage {
         );
         await uploadRequest.upload();
     }
+
+    async move(folder: any, restoreFolder: string) {
+        const list = [];
+        for await(const key of this.list(folder)) {
+            const newPath = restoreFolder + key.cloudPath.substring(folder.length);
+            list.push(key.cloudPath);
+            const copy = new S3Copy(this.client, {
+                SourceBucket: this.bucket,
+                SourceKey: key.cloudPath,
+                Bucket: this.bucket,
+                Key: newPath
+            });
+
+            await copy.upload();
+            // await this.client.send(new CopyObjectCommand({
+            //     Bucket: this.bucket,
+            //     Key: newPath,
+            //     CopySource: this.bucket + "/" + key.cloudPath
+            // }));
+        }
+        for(const Key of list) {
+            await this.client.send(new DeleteObjectCommand({
+                Bucket: this.bucket,
+                Key
+            }));
+        }
+    }
+
+
 
     async *list(cloudPath, signal?: AbortSignal, throwIfAborted = false) {
         const Prefix = join(this.folder, cloudPath);
