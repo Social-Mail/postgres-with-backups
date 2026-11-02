@@ -95,8 +95,8 @@ export default class S3Storage extends BaseStorage {
     async move(folder: any, restoreFolder: string) {
         const list = [];
         for await(const key of this.list(folder)) {
-            const newPath = join(restoreFolder, key.cloudPath);
-            list.push(join(this.folder, folder, key.cloudPath));
+            const newPath = join(restoreFolder, key.cloudPath.substring(folder.length));
+            list.push(join(this.folder, key.cloudPath));
             const copy = new S3Copy(this.client, {
                 SourceBucket: this.bucket,
                 SourceKey: join(this.folder, key.cloudPath),
