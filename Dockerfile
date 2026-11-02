@@ -21,11 +21,12 @@ COPY ./postgres-primary/wal-send.sh ./
 
 COPY ./pg-backup/package.json ./
 COPY ./pg-backup/package-lock.json ./
-COPY ./pg-backup/src ./src
+RUN npm i
+
 COPY ./pg-backup/index.js ./
 COPY ./pg-backup/tsconfig.json ./
+COPY ./pg-backup/src ./src
 
-RUN npm i
 RUN npx tsc
 
 RUN chmod +x ./entrypoint.sh
