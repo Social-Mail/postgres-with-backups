@@ -107,6 +107,7 @@ export default class S3Storage extends BaseStorage {
             await copy.upload();
         }
         for(const Key of list) {
+            console.log(`Deleting ${Key}`)
             await this.client.send(new DeleteObjectCommand({
                 Bucket: this.bucket,
                 Key
