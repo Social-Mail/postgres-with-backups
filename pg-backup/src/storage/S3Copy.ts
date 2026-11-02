@@ -1,4 +1,4 @@
-import { CompleteMultipartUploadCommand, CreateMultipartUploadCommand, CreateMultipartUploadCommandOutput, HeadObjectCommand, S3Client, UploadPartCommand, UploadPartCopyCommand } from "@aws-sdk/client-s3";
+import { CompleteMultipartUploadCommand, CreateMultipartUploadCommand, CreateMultipartUploadCommandOutput, HeadObjectCommand, S3Client, UploadPartCopyCommand } from "@aws-sdk/client-s3";
 import TaskManager from "./TaskManager.js";
 
 export default class S3Copy {

@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { globalEnv } from "../globalEnv.js";
 import BaseStorage from "./BaseStorage.js";
-import { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command, NoSuchKey, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command, NoSuchKey, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "node:stream";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
