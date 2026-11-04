@@ -52,9 +52,7 @@ export default class Restore {
 
         // this will keep copy but force recovered database to
         // take full backup
-        await this.storage.saveConfig({
-            old: config
-        })
+        await this.storage.saveConfig(config, "config." + Date.now() + ".json")
 
         // due to nature of backups stored...
         // we need to replace time for root backup as 0z
@@ -115,6 +113,11 @@ export default class Restore {
         ]);
 
         await spawnPromise("touch", [`${globalEnv.folders.data}/recovery.signal`]);
+
+        await this.storage.saveConfig({
+            // save empty..
+            latest: config.latest
+        })        
 
     }
 }
