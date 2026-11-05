@@ -120,6 +120,8 @@ export default class Restore {
         await this.storage.saveConfig({
             // save empty..
             latest: config.latest
+            // this will ensure
+            // new full backup
         })        
 
     }
