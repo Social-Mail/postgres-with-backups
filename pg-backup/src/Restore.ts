@@ -18,7 +18,13 @@ export default class Restore {
 
     async restore() {
 
-        const config = await this.storage.getConfig();
+        let config = await this.storage.getConfig();
+
+        if(!config.latest) {
+            config = await this.storage.getConfig("config.restore.json");
+        } else {
+            await this.storage.saveConfig(config, "config.restore.json");
+        }
 
         let folder = process.env.PG_RESTORE_DAY || config.latest;
         if(!folder) {
