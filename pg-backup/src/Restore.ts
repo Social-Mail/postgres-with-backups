@@ -28,10 +28,6 @@ export default class Restore {
         
         const pgRestore = globalEnv.folders.restore;
 
-        // await spawnPromise("mkdir", ["-p", dirname(pgRestore)]);
-
-        // await FileHelper.clearFolder(pgRestore);
-
         // load all into a temp folder...
         const tmpRoot = "/tmp/backups/" + Date.now();
 
@@ -75,22 +71,6 @@ export default class Restore {
                 input: sZipFilePath,
                 output: localFolder
             });
-
-            // for(const tarFile of await readdir(localFolder)) {
-            //     if(!tarFile.endsWith(".tar")) {
-            //         continue;
-            //     }
-
-            //     const tarFilePath = join(localFolder, tarFile);
-
-            //     const toFolder = tarFile.endsWith("pg_wal.tar")
-            //         ? join(localFolder, "pg_wal")
-            //         : localFolder;
-
-            //     await spawnPromise("tar", ["-xf", tarFilePath, "-C", toFolder]);
-
-            //     await spawnPromise("rm", [tarFilePath, "-rf"]);
-            // }
 
             await spawnPromise("rm", [sZipFilePath, "-rf"]);
         }
