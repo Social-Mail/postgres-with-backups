@@ -25,10 +25,10 @@ chown -R postgres:postgres /db/wal
 chown -R postgres:postgres /etc/postgresql/postgresql.conf
 chown -R postgres:postgres /etc/postgresql/pg_hba.conf
 
-echo "$BACKUP_ENC_PASSWORD" > /app/.pwd
-sha256sum /app/.pwd | head -c 32 > /app/.pwd-hash
-rm /app/.pwd
-chown -R postgres:postgres /app/.pwd-hash
+echo "$BACKUP_ENC_PASSWORD" > /pg-app/.pwd
+sha256sum /pg-app/.pwd | head -c 32 > /pg-app/.pwd-hash
+rm /pg-app/.pwd
+chown -R postgres:postgres /pg-app/.pwd-hash
 
 if [ "$PG_MODE" == "replica" ]; then
 
@@ -62,7 +62,7 @@ else
 
         echo "Downloading latest backup"
 
-        node /app/index.js --restore
+        node /pg-app/index.js --restore
 
         if [ -f "$PG_RESTORE/restore.sh" ]; then
 
@@ -85,7 +85,7 @@ fi
         echo "[Backup] Starting long-running BackupTool service..."
         
         # Run your infinite script (replace 'start' with whatever argument your daemon takes)
-        node /app/index.js
+        node /pg-app/index.js
         
         echo "[Backup] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
         sleep 2

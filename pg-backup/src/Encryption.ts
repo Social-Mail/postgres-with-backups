@@ -8,7 +8,7 @@
 //     static async encryptFile(filePath: string, deleteFile = true) {
 
 //         const encPath = `${filePath}.enc`;
-//         await spawnPromise("openssl", ["enc", "-aes-256-cbc", "-pbkdf2", "-in", filePath, "-out", encPath, "-pass", "file:/app/.pwd-hash" ]);
+//         await spawnPromise("openssl", ["enc", "-aes-256-cbc", "-pbkdf2", "-in", filePath, "-out", encPath, "-pass", "file:/pg-app/.pwd-hash" ]);
 //         if (!deleteFile) {
 //             return;
 //         }
@@ -24,7 +24,7 @@
 //             await mkdir(dir, { recursive: true });
 //         }
 //         await writeFile(encPath, body);
-//         await spawnPromise("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-in", encPath, "-out", filePath, "-pass", "file:/app/.pwd-hash" ]);
+//         await spawnPromise("openssl", ["enc", "-d", "-aes-256-cbc", "-pbkdf2", "-in", encPath, "-out", filePath, "-pass", "file:/pg-app/.pwd-hash" ]);
 //         await unlink(encPath);
 //     }
 

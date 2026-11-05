@@ -145,7 +145,7 @@
             "request": "attach",
             "port": 9229,
             "localRoot": "${workspaceRoot}",
-            "remoteRoot": "/app/",
+            "remoteRoot": "/pg-app/",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js",
                 "${workspaceFolder}/node_modules/@entity-access/**/*.js",

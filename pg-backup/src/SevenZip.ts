@@ -13,7 +13,7 @@ export default class SevenZip {
     }) {
         const timeout = 15*60*1000;
 
-        const password = await readFile("/app/.pwd-hash", "utf-8");
+        const password = await readFile("/pg-app/.pwd-hash", "utf-8");
 
         return await spawnPromise(`7z`, ["a", output, input  + "/*", new Mask("-p" + password, 2)], {
             timeout,
@@ -30,7 +30,7 @@ export default class SevenZip {
         output: string,
         password?: string
     }) {
-        const password = await readFile("/app/.pwd-hash", "utf-8");
+        const password = await readFile("/pg-app/.pwd-hash", "utf-8");
         return await spawnPromise(`7z`, ["x", input, new Mask("-p" + password, 2), "-o" + output], {
             timeout: 15*60*1000
         });

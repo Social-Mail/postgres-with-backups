@@ -73,7 +73,7 @@ export class Backup {
         let latestManifestPath;
 
         let diff = false;
-        if(latest.latest === this.folder) {
+        if(latest.latest === this.folder && latest.manifest) {
             diff = true;
             // save manifest...
             latestManifestPath = tempBackupFolder + "_manifest";
