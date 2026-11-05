@@ -20,18 +20,12 @@ export default class Restore {
 
         let config = await this.storage.getConfig();
 
-        if(!config.latest) {
-            config = await this.storage.getConfig("config.restore.json");
-        } else {
-            await this.storage.saveConfig(config, "config.restore.json");
-        }
-
         let folder = process.env.PG_RESTORE_DAY || config.latest;
         if(!folder) {
             console.log(`No backups exist to restore... `)
             return;
         }
-
+        
         const pgRestore = globalEnv.folders.restore;
 
         // await spawnPromise("mkdir", ["-p", dirname(pgRestore)]);
@@ -50,6 +44,9 @@ export default class Restore {
                 // delete move entire restore folder...
                 await this.storage.move(restoreFolder, restoreFolder + "." + Date.now());
             }
+        } else {
+            console.log(`No backup exists to restore, config file exists but folder doesn't.`);
+            return;
         }
 
         await this.storage.move(folder, restoreFolder);
