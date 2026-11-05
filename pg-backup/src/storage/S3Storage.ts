@@ -32,8 +32,8 @@ export default class S3Storage extends BaseStorage {
         });
     }
 
-    async getConfig() {
-        const Key = join(this.folder, "config.json");
+    async getConfig(name = "config.json") {
+        const Key = join(this.folder, name);
         try {
             
             const r = await this.client.send(new GetObjectCommand({
