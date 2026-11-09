@@ -133,6 +133,9 @@ export default class S3Storage extends BaseStorage {
                 ContinuationToken,
             });
             const result = await this.client.send(command);
+            if(!result.Contents) {
+                break;
+            }
             for (const { Key } of result.Contents) {
                 yield {
                     cloudPath: Key.substring(this.folder.length + 1),

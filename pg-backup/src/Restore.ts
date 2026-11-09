@@ -47,6 +47,10 @@ export default class Restore {
 
         await this.storage.move(folder, restoreFolder);
 
+        // need to move wal as well..
+        await this.storage.move("wal.restore", "wal.restore." + Date.now());
+        await this.storage.move("wal", "wal.restore");
+
         folder = restoreFolder;
 
         // this will keep copy but force recovered database to
