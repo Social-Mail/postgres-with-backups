@@ -2,13 +2,6 @@
 
 set -e
 
-# if [ ! -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" ]; then
-#   cp -f "/etc/letsencrypt/live/$HOST_NAME/fullchain.pem" /var/lib/postgresql/server.crt
-#   cp -f "/etc/letsencrypt/live/$HOST_NAME/privkey.pem" /var/lib/postgresql/server.key
-#   chmod 600 /var/lib/postgresql/server.*
-#   chown postgres:postgres /var/lib/postgresql/server.*
-# fi
-
 if [ ! -s "/var/lib/postgresql/server.crt" ]; then
     openssl req -new -x509 -days 3650 -nodes \
         -out "/var/lib/postgresql/server.crt" \
@@ -72,19 +65,22 @@ else
 
     if [ ! -s "$PGDATA/PG_VERSION" ]; then
 
-        echo "Downloading latest backup"
+        if [ ! "$PG_TEST" == "test" ]; then
 
-        node /pg-app/index.js --restore
+            echo "Downloading latest backup"
 
-        if [ -f "$PG_RESTORE/restore.sh" ]; then
+            node /pg-app/index.js --restore
 
-            echo "Starting Recovery"
+            if [ -f "$PG_RESTORE/restore.sh" ]; then
 
-            "$PG_RESTORE/restore.sh"
+                echo "Starting Recovery"
 
-            touch "$PGDATA/recovery.signal"
-            touch "$PG_RESTORE/restored.done"
+                "$PG_RESTORE/restore.sh"
 
+                touch "$PGDATA/recovery.signal"
+                touch "$PG_RESTORE/restored.done"
+
+            fi
         fi
 
     fi
