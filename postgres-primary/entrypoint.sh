@@ -9,8 +9,20 @@ set -e
 #   chown postgres:postgres /var/lib/postgresql/server.*
 # fi
 
+if [ ! -s "/var/lib/postgresql/server.crt" ]; then
+    openssl req -new -x509 -days 3650 -nodes \
+        -out "/var/lib/postgresql/server.crt" \
+        -keyout "/var/lib/postgresql/server.key" \
+        -subj "/CN=postgres" \
+        -addext "subjectAltName=DNS:localhost,DNS:postgres,IP:127.0.0.1"
+fi
+
 chmod 600 /var/lib/postgresql/server.*
 chown postgres:postgres /var/lib/postgresql/server.*
+
+echo "================ GENERATED CERTIFICATE ==============="
+cat "/var/lib/postgresql/server.crt"
+echo "======================================================"
 
 # Ensure proper ownership
 

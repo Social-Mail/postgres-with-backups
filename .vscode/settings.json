@@ -20,6 +20,7 @@
         "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "cSpell.words": [
+        "addext",
         "Akash",
         "autoload",
         "basebackup",
@@ -52,7 +53,9 @@
         "IDKIM",
         "igmu",
         "INTERNALDATE",
+        "isready",
         "keepalives",
+        "keyout",
         "letsencrypt",
         "libvorbis",
         "libvpx",
