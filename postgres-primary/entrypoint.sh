@@ -79,19 +79,21 @@ else
 
 fi
 
-(
-    while true; do
+if [ -z "${NODE_TEST}" ]; then
+    (
+        while true; do
 
-        echo "[Backup] Starting long-running BackupTool service..."
-        
-        # Run your infinite script (replace 'start' with whatever argument your daemon takes)
-        node /pg-app/index.js
-        
-        echo "[Backup] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
-        sleep 2
+            echo "[Backup] Starting long-running BackupTool service..."
+            
+            # Run your infinite script (replace 'start' with whatever argument your daemon takes)
+            node /pg-app/index.js
+            
+            echo "[Backup] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
+            sleep 2
 
-    done
-) &
+        done
+    ) &
+fi
 
 if [ -n "${NODE_APP}" ]; then
     (
