@@ -93,5 +93,20 @@ fi
     done
 ) &
 
+if [ -n "${NODE_APP}" ]; then
+    (
+        while true; do
+
+            sleep 2
+
+            echo "[NODE_APP] Starting running App "
+            
+            # Run your infinite script (replace 'start' with whatever argument your daemon takes)
+            node /app/index.js
+            
+            echo "[Backup] WARNING: BackupTool exited or crashed! Restarting in 2 seconds..."
+        done
+    ) &
+fi
 
 docker-entrypoint.sh "$@"
