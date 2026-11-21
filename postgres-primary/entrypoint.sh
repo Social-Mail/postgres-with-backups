@@ -89,6 +89,7 @@ fi
 
 if [ -z "${NODE_TEST}" ]; then
     (
+
         while true; do
 
             echo "[Backup] Starting long-running BackupTool service..."
@@ -105,6 +106,9 @@ fi
 
 if [ -n "${NODE_APP}" ]; then
     (
+
+        set +e
+
         while true; do
 
             sleep 2
